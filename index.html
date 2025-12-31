@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Credentials Generator | Admin Tool</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --background-light: #f8fafc;
+            --background-dark: #0f172a;
+            --surface-light: #ffffff;
+            --surface-dark: #1e293b;
+            --text-light: #334155;
+            --text-dark: #f1f5f9;
+            --border-light: #e2e8f0;
+            --border-dark: #334155;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode header {
+            border-bottom-color: var(--border-dark);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: inherit;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        body.dark-mode .subtitle {
+            color: #94a3b8;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: inherit;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .theme-toggle {
+            border-color: var(--border-dark);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-light);
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background-color: var(--border-dark);
+        }
+
+        .card {
+            background-color: var(--surface-light);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-md);
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .card {
+            background-color: var(--surface-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: inherit;
+        }
+
+        input, select, button {
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background-color: var(--surface-light);
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select {
+            background-color: var(--background-dark);
+            border-color: var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .radio-option input {
+            width: auto;
+        }
+
+        .password-format-card {
+            background-color: rgba(37, 99, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        body.dark-mode .password-format-card {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .password-format-card h4 {
+            margin-bottom: 0.75rem;
+            color: inherit;
+            font-size: 1rem;
+        }
+
+        .password-format-diagram {
+            font-family: 'Courier New', monospace;
+            background-color: var(--background-light);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        body.dark-mode .password-format-diagram {
+            background-color: var(--background-dark);
+            border-color: var(--border-dark);
+        }
+
+        .format-explanation {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .format-part {
+            padding: 0.5rem;
+            background-color: rgba(37, 99, 235, 0.1);
+            border-radius: var(--radius-md);
+        }
+
+        body.dark-mode .format-part {
+            background-color: rgba(37, 99, 235, 0.15);
+        }
+
+        .password-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .password-example {
+            font-family: 'Courier New', monospace;
+            background-color: var(--background-light);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            font-weight: 500;
+        }
+
+        body.dark-mode .password-example {
+            background-color: var(--background-dark);
+            border-color: var(--border-dark);
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .warning-note {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        body.dark-mode .warning-note {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+
+        .warning-note strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .output-section {
+            display: none;
+        }
+
+        .output-section.active {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .output-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+        }
+
+        body.dark-mode .table-container {
+            border-color: var(--border-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        thead {
+            background-color: var(--background-light);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        body.dark-mode thead {
+            background-color: var(--background-dark);
+            border-bottom-color: var(--border-dark);
+        }
+
+        th {
+            padding: 0.875rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: inherit;
+        }
+
+        td {
+            padding: 0.875rem;
+            border-bottom: 1px solid var(--border-light);
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: inherit;
+            font-weight: 500;
+        }
+
+        body.dark-mode td {
+            border-bottom-color: var(--border-dark);
+        }
+
+        tbody tr:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        body.dark-mode tbody tr:hover {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+        body.dark-mode .stats {
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.75rem;
+            }
+            
+            .card {
+                padding: 1.25rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .password-examples {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .format-explanation {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .password-format-diagram {
+                font-size: 0.95rem;
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Credentials Generator</h1>
+            <p class="subtitle">Admin tool for generating secure login credentials</p>
+        </header>
+
+        <button class="theme-toggle" id="themeToggle">
+            Toggle Dark Mode
+        </button>
+
+        <main>
+            <section class="card">
+                <h2 style="margin-bottom: 1.25rem; font-size: 1.25rem;">Generate Credentials</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="usernamePrefix">Username Prefix</label>
+                        <input type="text" id="usernamePrefix" placeholder="AZSF" maxlength="10" value="AZSF">
+                        <small style="color: #64748b; display: block; margin-top: 0.25rem; font-size: 0.85rem;">Prefix for all usernames</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startNumber">Start Number</label>
+                        <input type="number" id="startNumber" placeholder="1" min="1" max="9999" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endNumber">End Number</label>
+                        <input type="number" id="endNumber" placeholder="100" min="1" max="9999" value="100">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Gender (for username formatting)</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="F" checked>
+                            Female
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="M">
+                            Male
+                        </label>
+                    </div>
+                </div>
+
+                <div class="password-format-card">
+                    <h4>Password Format: Fixed Pattern</h4>
+                    <div class="password-format-diagram" id="formatDiagram">
+                        Dxyz@1234
+                    </div>
+                    <div class="format-explanation">
+                        <div class="format-part">1 Random<br>CAPITAL Letter</div>
+                        <div class="format-part">3 Random<br>small letters</div>
+                        <div class="format-part">1 Special<br>@ or #</div>
+                        <div class="format-part">4 Random<br>Numbers</div>
+                    </div>
+                    <div class="password-examples">
+                        <div class="password-example">Xmno@5297</div>
+                        <div class="password-example">Tabc#8431</div>
+                        <div class="password-example">Qdef@1765</div>
+                        <div class="password-example">Vghi#3928</div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="generateBtn">
+                        Generate Credentials
+                    </button>
+                </div>
+                
+                <div class="warning-note">
+                    <strong>Security Notice</strong>
+                    For admin use only. Share credentials privately. No data is stored in browser.
+                </div>
+            </section>
+            
+            <section class="card output-section" id="outputSection">
+                <div class="output-header">
+                    <h2>Generated Credentials</h2>
+                    <button class="btn btn-success" id="exportBtn">
+                        Export CSV
+                    </button>
+                </div>
+                
+                <div class="stats">
+                    <div>Total: <span id="totalRecords">0</span> records</div>
+                    <div>Format: 1CAP+3low+1special+4nums</div>
+                    <div>Length: 9 characters exactly</div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="credentialsTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Password</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Generated rows will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const generateBtn = document.getElementById('generateBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const outputSection = document.getElementById('outputSection');
+        const tableBody = document.getElementById('tableBody');
+        const totalRecords = document.getElementById('totalRecords');
+        const formatDiagram = document.getElementById('formatDiagram');
+        
+        // Input elements
+        const usernamePrefix = document.getElementById('usernamePrefix');
+        const startNumber = document.getElementById('startNumber');
+        const endNumber = document.getElementById('endNumber');
+        
+        // Character sets
+        const uppercaseLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Removed I, O for clarity
+        const lowercaseLetters = 'abcdefghjkmnpqrstuvwxyz';   // Removed i, l, o for clarity
+        const specialChars = '@#';
+        const numbers = '0123456789';
+        
+        // Store generated credentials
+        let credentials = [];
+        let usedPasswords = new Set();
+        
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') 
+                ? 'Toggle Light Mode' 
+                : 'Toggle Dark Mode';
+        });
+        
+        // Helper function to get random character from string
+        function getRandomChar(charset) {
+            return charset[Math.floor(Math.random() * charset.length)];
+        }
+        
+        // Generate random string of specified length from charset
+        function getRandomString(charset, length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += getRandomChar(charset);
+            }
+            return result;
+        }
+        
+        // Generate password according to format: 1CAP + 3low + 1special + 4nums
+        function generateFormattedPassword() {
+            let password;
+            let attempts = 0;
+            const maxAttempts = 100;
+            
+            while (attempts < maxAttempts) {
+                // Generate parts according to format
+                const capsPart = getRandomChar(uppercaseLetters);
+                const smallPart = getRandomString(lowercaseLetters, 3);
+                const specialPart = getRandomChar(specialChars);
+                const numbersPart = getRandomString(numbers, 4);
+                
+                // Combine parts
+                password = capsPart + smallPart + specialPart + numbersPart;
+                
+                // Check for uniqueness
+                if (!usedPasswords.has(password)) {
+                    usedPasswords.add(password);
+                    return password;
+                }
+                
+                attempts++;
+            }
+            
+            // Fallback: add timestamp to ensure uniqueness
+            const capsPart = getRandomChar(uppercaseLetters);
+            const smallPart = getRandomString(lowercaseLetters, 3);
+            const specialPart = getRandomChar(specialChars);
+            const numbersPart = Date.now().toString().slice(-4);
+            
+            password = capsPart + smallPart + specialPart + numbersPart;
+            usedPasswords.add(password);
+            return password;
+        }
+        
+        // Update format diagram with random example
+        function updateFormatDiagram() {
+            const capsPart = getRandomChar(uppercaseLetters);
+            const smallPart = getRandomString(lowercaseLetters, 3);
+            const specialPart = getRandomChar(specialChars);
+            const numbersPart = getRandomString(numbers, 4);
+            
+            formatDiagram.textContent = capsPart + smallPart + specialPart + numbersPart;
+        }
+        
+        // Generate usernames
+        function generateUsernames(prefix, start, end) {
+            const usernames = [];
+            const maxLength = Math.max(start.toString().length, end.toString().length);
+            
+            for (let i = start; i <= end; i++) {
+                const paddedNumber = i.toString().padStart(maxLength, '0');
+                usernames.push(`${prefix}${paddedNumber}`);
+            }
+            
+            return usernames;
+        }
+        
+        // Generate credentials
+        generateBtn.addEventListener('click', () => {
+            const prefix = usernamePrefix.value.trim().toUpperCase();
+            const start = parseInt(startNumber.value);
+            const end = parseInt(endNumber.value);
+            
+            // Validation
+            if (!prefix) {
+                alert('Please enter a username prefix');
+                usernamePrefix.focus();
+                return;
+            }
+            
+            if (isNaN(start) || isNaN(end) || start < 1 || end < 1) {
+                alert('Please enter valid start and end numbers');
+                return;
+            }
+            
+            if (start > end) {
+                alert('Start number must be less than or equal to end number');
+                return;
+            }
+            
+            const count = end - start + 1;
+            if (count > 1000) {
+                if (!confirm(`Generate ${count} credentials? This may take a moment.`)) {
+                    return;
+                }
+            }
+            
+            // Reset
+            credentials = [];
+            usedPasswords.clear();
+            tableBody.innerHTML = '';
+            
+            // Generate usernames
+            const usernames = generateUsernames(prefix, start, end);
+            
+            // Update button state
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            
+            // Generate in batches to avoid UI blocking
+            let index = 0;
+            
+            function generateBatch() {
+                const batchSize = 100;
+                const endIndex = Math.min(index + batchSize, usernames.length);
+                
+                for (; index < endIndex; index++) {
+                    const username = usernames[index];
+                    const password = generateFormattedPassword();
+                    credentials.push({ username, password });
+                    
+                    // Add to table
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><code>${username}</code></td>
+                        <td><code>${password}</code></td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+                
+                // Update progress
+                totalRecords.textContent = credentials.length;
+                
+                // Continue if not done
+                if (index < usernames.length) {
+                    setTimeout(generateBatch, 0);
+                } else {
+                    // Done
+                    outputSection.classList.add('active');
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Generate Credentials';
+                    
+                    // Scroll to results
+                    setTimeout(() => {
+                        outputSection.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }
+            }
+            
+            // Start generation
+            setTimeout(generateBatch, 0);
+        });
+        
+        // Export CSV
+        exportBtn.addEventListener('click', () => {
+            if (credentials.length === 0) {
+                alert('No credentials to export');
+                return;
+            }
+            
+            // Create CSV content
+            let csvContent = 'Username,Password\n';
+            credentials.forEach(item => {
+                csvContent += `${item.username},${item.password}\n`;
+            });
+            
+            // Create blob and download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'alzuhra_student_credentials.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        });
+        
+        // Input validation
+        [startNumber, endNumber].forEach(input => {
+            input.addEventListener('change', (e) => {
+                let value = parseInt(e.target.value);
+                if (isNaN(value) || value < 1) e.target.value = 1;
+                if (value > 9999) e.target.value = 9999;
+            });
+        });
+        
+        // Initialize with example values
+        usernamePrefix.value = 'AZSF';
+        startNumber.value = '1';
+        endNumber.value = '100';
+        
+        // Update format diagram periodically
+        updateFormatDiagram();
+        setInterval(updateFormatDiagram, 3000);
+    </script>
+</body>
+</html>
